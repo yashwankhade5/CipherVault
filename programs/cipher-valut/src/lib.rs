@@ -1,17 +1,14 @@
+pub mod state;
+use crate::state::{multisig::*, transaction::*, SplTokenData};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
-pub mod state;
-use crate::state::{ SplTokenData};
-
-use state::transaction::*;
- 
-use state::multisig::*;
+pub mod instruction_handler;
+use crate::instruction_handler::*;
 
 declare_id!("DwNor5AYxg3s7gckBr1Q3YRf2fLPbEjk8Fz11oYKwUas");
 
 #[program]
 pub mod cipher_valut {
-    use anchor_spl::token::spl_token;
 
     use super::*;
 
@@ -45,8 +42,28 @@ pub mod cipher_valut {
         Ok(())
     }
 
+    pub fn approval(ctx: Context<ApprovalContext>) -> Result<()> {
+        let owner_index = ctx
+            .accounts
+            .multisig
+            .owners
+            .iter()
+            .position(|&owner| owner == ctx.accounts.approver.key());
+        let approval_vec = &mut ctx.accounts.transaction.approval;
+        let threshold = ctx.accounts.multisig.threshold;
+        if let Some(position) = owner_index {
+            approval_vec[position] = true;
+            let num_approval = approval_vec
+                .iter()
+                .filter(|&&approve_val| approve_val == true)
+                .count();
+            if num_approval >= threshold.into() {}
+        } else {
+            return err!(MyError::InvalidOwnerError);
+        }
 
-
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -66,9 +83,15 @@ pub struct Initialize<'info> {
     )]
     pub multisig: Account<'info, Multisig>,
 
+    #[account(init,
+        payer=creator,
+        space=0,
+        seeds=[b"multisig",multisig.key().as_ref()],
+    bump)]
+    pub vault: AccountInfo<'info>,
+
     pub system_program: Program<'info, System>,
 }
-
 
 #[derive(Accounts)]
 pub struct TransactionContext<'info> {
@@ -98,4 +121,22 @@ pub struct TransactionContext<'info> {
 
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
+}
+
+#[derive(Accounts)]
+pub struct ApprovalContext<'info> {
+    #[account(mut)]
+    pub approver: Signer<'info>,
+
+    pub multisig: Account<'info, Multisig>,
+
+    pub transaction: Account<'info, TransactionAccount>,
+}
+
+#[error_code]
+pub enum MyError {
+    #[msg("Invalid owner tried to approve")]
+    InvalidOwnerError,
+    #[msg("not enough approvals")]
+    NotEnoughApproval,
 }

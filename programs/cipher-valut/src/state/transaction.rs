@@ -1,11 +1,9 @@
-use std::default;
 
 use anchor_lang::prelude::*;
-
 #[derive(AnchorDeserialize,AnchorSerialize,Clone,Default)]
 pub struct SplTokenData{
-    mint:Pubkey,
-    amount:u64
+   pub mint:Pubkey,
+   pub amount:u64
 }
 
 #[account]
