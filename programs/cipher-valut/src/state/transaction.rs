@@ -9,6 +9,7 @@ pub struct SplTokenData{
 #[account]
 pub struct TransactionAccount{
     pub multisig:Pubkey,
+    pub valut:Pubkey,
     pub amount:u64,
     pub approval:Vec<bool>,
     pub spl_token:SplTokenData,

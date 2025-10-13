@@ -38,6 +38,7 @@ pub mod cipher_valut {
         ctx.accounts.transaction_account.proposer = ctx.accounts.proposer.key();
         ctx.accounts.transaction_account.executed = false;
         ctx.accounts.transaction_account.date = clock.unix_timestamp;
+        ctx.accounts.transaction_account.valut = ctx.accounts.vault.key();
 
         Ok(())
     }
@@ -118,6 +119,7 @@ pub struct TransactionContext<'info> {
 
     /// CHECK: it is for transfer and this account can be created by anchor,native or system program so that is why accountinfo
     pub reciepient: AccountInfo<'info>,
+    pub vault: AccountInfo<'info>,
 
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
