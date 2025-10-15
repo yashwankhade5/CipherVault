@@ -68,6 +68,7 @@ pub mod cipher_valut {
 }
 
 #[derive(Accounts)]
+#[instruction(name:String)]
 pub struct Initialize<'info> {
     #[account(mut)]
     pub creator: Signer<'info>,
@@ -79,7 +80,7 @@ pub struct Initialize<'info> {
         12000+  // max no of tokens hold = 1000
         64+   // sol amount
         4,//creator:pubkey
-        seeds=[b"multisig",creator.key().as_ref()],
+        seeds=[b"multisig",creator.key().as_ref(),name.as_bytes()],
         bump
     )]
     pub multisig: Account<'info, Multisig>,
@@ -89,6 +90,8 @@ pub struct Initialize<'info> {
         space=0,
         seeds=[b"multisig",multisig.key().as_ref()],
     bump)]
+
+    /// CHECK: vault storing sol not a dataccount
     pub vault: AccountInfo<'info>,
 
     pub system_program: Program<'info, System>,
@@ -119,6 +122,9 @@ pub struct TransactionContext<'info> {
 
     /// CHECK: it is for transfer and this account can be created by anchor,native or system program so that is why accountinfo
     pub reciepient: AccountInfo<'info>,
+
+        /// CHECK: vault storing sol not a dataccount
+        
     pub vault: AccountInfo<'info>,
 
     pub system_program: Program<'info, System>,
@@ -141,4 +147,7 @@ pub enum MyError {
     InvalidOwnerError,
     #[msg("not enough approvals")]
     NotEnoughApproval,
+
+    #[msg("reciepient account not recieved")]
+    ReciepientAccountNotReceived
 }
