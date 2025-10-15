@@ -22,13 +22,15 @@ pub fn transaction_execute(ctx: Context<TransactionExecuteContext>) -> Result<()
     let reciepient = ctx.accounts.transaction_account.reciepient;
     let vault = ctx.accounts.vault.key();
     let system_program = ctx.accounts.system_program.to_account_info();
+    let vault_info = ctx.accounts.vault.to_account_info();
+
 
     let reciepient_account = ctx
         .remaining_accounts
         .iter()
         .find(|a| a.key() == reciepient)
         .ok_or(MyError::ReciepientAccountNotReceived)?;
-    let vault_info = ctx.accounts.vault;
+   
 
     require!(threshold > approval_count, MyError::NotEnoughApproval);
     let account_meta = vec![
@@ -36,7 +38,7 @@ pub fn transaction_execute(ctx: Context<TransactionExecuteContext>) -> Result<()
         AccountMeta::new(reciepient, true),
     ];
 
-    if sol_amount > 0 {
+    
         let ins_discriminator: u32 = 2;
         let mut instruction_data = vec![];
         instruction_data.extend_from_slice(&ins_discriminator.to_le_bytes());
@@ -47,12 +49,12 @@ pub fn transaction_execute(ctx: Context<TransactionExecuteContext>) -> Result<()
             data: instruction_data,
         };
 
-        let accoun = [vault_info.clone(),  reciepient_account.clone(),system_program.clone()];
+        let accoun = [vault_info,system_program];
 
         let signers_seeds = [b"multisig", multisig.as_ref()];
 
         invoke_signed(&ix, &accoun[..], &[&signers_seeds[..]]);
-    }
+    
 
     Ok(())
 }
@@ -66,6 +68,8 @@ pub struct TransactionExecuteContext<'info> {
     /// CHECK: this sol vault not dataccount
     ///
     pub vault: AccountInfo<'info>,
+
+    
 
     pub system_program: Program<'info, System>,
 }
