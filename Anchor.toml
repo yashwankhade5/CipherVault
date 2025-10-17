@@ -6,13 +6,13 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-cipher_valut = "DwNor5AYxg3s7gckBr1Q3YRf2fLPbEjk8Fz11oYKwUas"
+cipher_valut = "4nFQagmRC8AEHE4QrRm77AugqXGns84abTCBNourjEQE"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "http://127.0.0.1:8899"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

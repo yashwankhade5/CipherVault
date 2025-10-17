@@ -5,7 +5,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 pub mod instruction_handler;
 use crate::instruction_handler::*;
 
-declare_id!("DwNor5AYxg3s7gckBr1Q3YRf2fLPbEjk8Fz11oYKwUas");
+declare_id!("4nFQagmRC8AEHE4QrRm77AugqXGns84abTCBNourjEQE");
 
 #[program]
 pub mod cipher_valut {
@@ -18,10 +18,10 @@ pub mod cipher_valut {
         owners: Vec<Pubkey>,
         name: String,
     ) -> Result<()> {
-        ctx.accounts.multisig.creator = ctx.accounts.creator.key();
-        ctx.accounts.multisig.owners = Box::new(owners);
-        ctx.accounts.multisig.threshold = threshold;
-        ctx.accounts.multisig.name = name;
+        ctx.accounts.multi_sig.creator = ctx.accounts.creator.key();
+        ctx.accounts.multi_sig.owners = Box::new(owners);
+        ctx.accounts.multi_sig.threshold = threshold;
+        ctx.accounts.multi_sig.name = name;
         Ok(())
     }
 
@@ -32,7 +32,7 @@ pub mod cipher_valut {
     ) -> Result<()> {
         let clock = Clock::get()?;
         ctx.accounts.transaction_account.multisig = ctx.accounts.multisig.key();
-        ctx.accounts.transaction_account.amount = amount.unwrap_or(0);
+        ctx.accounts.transaction_account.amount = amount.unwrap_or(0)*1_000_000_000;
         ctx.accounts.transaction_account.spl_token = spl_token.unwrap_or_default();
         ctx.accounts.transaction_account.approval = vec![false; ctx.accounts.multisig.owners.len()];
         ctx.accounts.transaction_account.proposer = ctx.accounts.proposer.key();
@@ -68,32 +68,32 @@ pub mod cipher_valut {
 }
 
 #[derive(Accounts)]
-#[instruction(name:String)]
+
 pub struct Initialize<'info> {
-    #[account(mut)]
-    pub creator: Signer<'info>,
+   
 
     #[account(init,payer=creator,
         space=8+
         8+   //
         60+   //max owners size = 15
-        12000+  // max no of tokens hold = 1000
+        1200+  // max no of tokens hold = 1000
         64+   // sol amount
         4,//creator:pubkey
-        seeds=[b"multisig",creator.key().as_ref(),name.as_bytes()],
+        seeds=[b"multisig",creator.key().as_ref()],
         bump
     )]
-    pub multisig: Account<'info, Multisig>,
+    pub multi_sig: Account<'info, Multisig>,
 
     #[account(init,
         payer=creator,
         space=0,
-        seeds=[b"multisig",multisig.key().as_ref()],
+        seeds=[b"multisig",multi_sig.key().as_ref()],
     bump)]
 
     /// CHECK: vault storing sol not a dataccount
     pub vault: AccountInfo<'info>,
-
+ #[account(mut)]
+    pub creator: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
 
