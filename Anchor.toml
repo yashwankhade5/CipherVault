@@ -1,12 +1,13 @@
 [toolchain]
 package_manager = "yarn"
+anchor_version = "0.31.1"
 
 [features]
 resolution = true
 skip-lint = false
 
 [programs.localnet]
-cipher_valut = "4nFQagmRC8AEHE4QrRm77AugqXGns84abTCBNourjEQE"
+cipher_valut = "2CnsfpdJGrjRD9a4Ru7JQk4VpmTAnSiqQ7CrY7yKwEot"
 
 [registry]
 url = "https://api.apr.dev"
