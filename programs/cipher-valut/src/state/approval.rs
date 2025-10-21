@@ -7,6 +7,7 @@ pub struct ApprovalContext<'info> {
     pub approver: Signer<'info>,
 
     pub multisig: Account<'info, Multisig>,
+
     #[account(mut)]
     pub transaction: Account<'info, TransactionAccount>,
 }

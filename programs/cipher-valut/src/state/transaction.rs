@@ -38,7 +38,7 @@ pub struct TransactionContext<'info> {
         1+ //executed bool
         32+
         8, // reciepient
-        seeds = [b"transaction",multisig.creator.key().as_ref()],
+        seeds = [b"transaction",multisig.creator.key().as_ref(),&multisig.transaction_count.to_le_bytes()],
         bump
     )]
     pub transaction_account: Account<'info, TransactionAccount>,

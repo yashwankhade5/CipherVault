@@ -1,8 +1,8 @@
 use anchor_lang::prelude::*;
 pub mod instruction_handler;
 pub mod state;
+use crate::instruction_handler::*;
 use crate::state::{approval::*, multisig::*, transaction::*, SplTokenData};
-use  crate::instruction_handler::*;
 
 declare_id!("2CnsfpdJGrjRD9a4Ru7JQk4VpmTAnSiqQ7CrY7yKwEot");
 
@@ -18,7 +18,7 @@ pub mod cipher_valut {
         owners: Vec<Pubkey>,
         name: String,
     ) -> Result<()> {
-       create_multisig_handler(ctx, threshold, owners, name)
+        create_multisig_handler(ctx, threshold, owners, name)
     }
 
     pub fn create_transaction(
@@ -26,15 +26,15 @@ pub mod cipher_valut {
         amount: Option<u64>,
         spl_token: Option<SplTokenData>,
     ) -> Result<()> {
-       create_transaction_handler(ctx, amount, spl_token)
+        create_transaction_handler(ctx, amount, spl_token)
     }
 
     pub fn approval(ctx: Context<ApprovalContext>) -> Result<()> {
-       approval_handler(ctx)
+        approval_handler(ctx)
     }
 
-    pub fn fn_execute(ctx: Context<TransactionExecuteContext>) -> Result<()>{
-transaction_execute(ctx)
+    pub fn fn_execute(ctx: Context<TransactionExecuteContext>) -> Result<()> {
+        transaction_execute(ctx)
     }
 }
 
@@ -44,9 +44,10 @@ pub enum MyError {
     InvalidOwnerError,
     #[msg("not enough approvals")]
     NotEnoughApproval,
-
     #[msg("reciepient account not recieved")]
     ReciepientAccountNotReceived,
     #[msg("propser not in onwers")]
     ProposeNotinOwners,
+    #[msg("not enough sol in vault")]
+    NotEnoughSol,
 }
