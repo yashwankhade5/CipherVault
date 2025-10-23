@@ -45,6 +45,7 @@ export interface Transaction {
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
+  
 
   // Mock data - in production, this would come from Solana
   const [multisigs, setMultisigs] = useState<Multisig[]>([
