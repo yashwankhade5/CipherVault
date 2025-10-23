@@ -9,15 +9,16 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from './ui/dropdown-menu';
-import  type { Transaction } from '../App';
+import  type { Transaction } from '../typescipervault';
 import { toast } from 'sonner';
+import  { PublicKey } from "@solana/web3.js";
 
 interface TransactionTableProps {
   transactions: Transaction[];
   onApproveTransaction: (txId: string) => void;
   onExecuteTransaction: (txId: string) => void;
   onRejectTransaction?: (txId: string) => void;
-  connectedWallet: string;
+  connectedWallet: PublicKey | null;
   compact?: boolean;
 }
 
@@ -80,7 +81,11 @@ export function TransactionTable({
       </TableHeader>
       <TableBody>
         {transactions.map((tx) => {
-          const hasApproved = tx.approvedBy.includes(connectedWallet);
+let hasApproved 
+          if (connectedWallet){
+           hasApproved  = tx.approvedBy.includes(connectedWallet);
+          }
+          
           const canExecute = tx.status === 'ready';
           const canApprove = tx.status === 'pending' && !hasApproved;
           

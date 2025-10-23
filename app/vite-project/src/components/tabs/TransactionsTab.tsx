@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { TransactionTable } from '../TransactionTable';
 import { CreateTransactionDialog } from '../CreateTransactionDialog';
-import type { Multisig, Transaction } from '../../App';
+import type { Multisig, Transaction } from '../../typescipervault';
+import  { PublicKey } from "@solana/web3.js";
 
 interface TransactionsTabProps {
   multisigs: Multisig[];
@@ -16,7 +17,7 @@ interface TransactionsTabProps {
   onApproveTransaction: (txId: string) => void;
   onExecuteTransaction: (txId: string) => void;
   onRejectTransaction: (txId: string) => void;
-  connectedWallet: string;
+  connectedWallet: PublicKey | null;
 }
 
 export function TransactionsTab({ 

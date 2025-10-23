@@ -5,35 +5,7 @@ import { Badge } from '../ui/badge';
 import { CreateMultisigDialog } from '../CreateMultisigDialog';
 import { CreateTransactionDialog } from '../CreateTransactionDialog';
 
-export interface Multisig {
-  id: string;
-  name: string;
-  pda: string;
-  owners: string[];
-  threshold: number;
-  balance: string;
-  currency: string;
-  txPending: number;
-  color: string;
-  createdAt: number;
-}
-
-export interface Transaction {
-  id: string;
-  multisigId: string;
-  multisigName: string;
-  pda: string;
-  recipient: string;
-  amount: string;
-  token: string;
-  tokenMint?: string;
-  approvals: number;
-  threshold: number;
-  approvedBy: string[];
-  status: 'pending' | 'ready' | 'executed' | 'rejected';
-  createdAt: number;
-  executedAt?: number;
-}
+import type { Multisig,Transaction } from "../../typescipervault";
 
 
 interface MultisigsTabProps {

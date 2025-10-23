@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import type { Multisig } from '../App';
+import type { Multisig } from '../typescipervault';
 import { toast } from 'sonner';
 
 interface CreateMultisigDialogProps {

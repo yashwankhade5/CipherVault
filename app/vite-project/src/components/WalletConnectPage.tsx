@@ -2,21 +2,25 @@ import { Shield, Wallet, Users, Lock, ArrowRight, CheckCircle } from 'lucide-rea
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import {
-    WalletModalProvider,
-    WalletDisconnectButton,
-    WalletMultiButton
+  WalletMultiButton
 } from '@solana/wallet-adapter-react-ui';
+import { PublicKey } from "@solana/web3.js";
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useEffect } from 'react';
 
 interface WalletConnectPageProps {
-  onConnect: (wallet: string) => void;
+  onConnect: (wallet: PublicKey | null) => void;
 }
 
 export function WalletConnectPage({ onConnect }: WalletConnectPageProps) {
+  const wallet = useWallet()
+  useEffect(() => {
+    if (wallet.connected) {
+      handleConnect()
+    }
+  }, [wallet.connected])
   const handleConnect = () => {
-    // In production, this would integrate with Phantom, Solflare, etc.
-    // For now, we'll simulate a wallet connection
-    const mockWallet = '7xK9p3xY2pmL3p';
-    onConnect(mockWallet);
+    onConnect(wallet.publicKey);
   };
 
   const features = [
@@ -66,20 +70,20 @@ export function WalletConnectPage({ onConnect }: WalletConnectPageProps) {
             <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
             <span className="text-purple-300 text-sm">Powered by Solana</span>
           </div>
-          
+
           <h1 className="text-white mb-6 text-5xl">
             Secure Multi-Signature
             <br />
             Treasury Management
           </h1>
-          
+
           <p className="text-slate-300 text-xl max-w-2xl mx-auto mb-8">
-            Protect your organization's funds with multi-signature wallets. 
+            Protect your organization's funds with multi-signature wallets.
             Require multiple approvals for every transaction on Solana.
           </p>
 
           <div className="flex items-center justify-center gap-4">
-            <Button 
+            <Button
               onClick={handleConnect}
               size="lg"
               className="bg-purple-600 hover:bg-purple-700 text-white gap-2 h-12 px-8"
@@ -88,7 +92,7 @@ export function WalletConnectPage({ onConnect }: WalletConnectPageProps) {
               Connect Wallet
               <ArrowRight className="w-4 h-4" />
             </Button>
-            <Button 
+            <Button
               size="lg"
               variant="outline"
               className="border-white/20 text-white hover:bg-white/10 h-12 px-8"
@@ -158,8 +162,8 @@ export function WalletConnectPage({ onConnect }: WalletConnectPageProps) {
             <p className="text-white/90 mb-8 text-lg">
               Connect your wallet and start managing your multisig in minutes
             </p>
-            <WalletMultiButton/>
-            <Button 
+            <WalletMultiButton />
+            <Button
               onClick={handleConnect}
               size="lg"
               className="bg-white text-purple-600 hover:bg-slate-100 gap-2 h-12 px-8"

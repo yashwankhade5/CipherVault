@@ -10,10 +10,11 @@ import {
   WalletDisconnectButton,
   WalletMultiButton
 } from '@solana/wallet-adapter-react-ui';
+import  { PublicKey } from "@solana/web3.js";
 
 
 interface SettingsTabProps {
-  connectedWallet: string;
+  connectedWallet: PublicKey | null;
   onDisconnect: () => void;
 }
 
@@ -63,12 +64,12 @@ export function SettingsTab({ connectedWallet, onDisconnect }: SettingsTabProps)
 
           <div className="bg-slate-50 rounded-lg p-4 mb-4">
             <div className="flex items-center justify-between">
-              <div className="font-mono text-sm text-slate-900">{connectedWallet}</div>
+              <div className="font-mono text-sm text-slate-900">{connectedWallet ? connectedWallet.toBase58() : "Connect"}</div>
               <div className="flex gap-2">
                 <Button 
                   size="sm" 
                   variant="ghost"
-                  onClick={() => handleCopy(connectedWallet)}
+                  onClick={() => handleCopy(connectedWallet?.toBase58() as string)}
                 >
                   <Copy className="w-4 h-4" />
                 </Button>

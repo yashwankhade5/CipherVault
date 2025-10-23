@@ -4,7 +4,8 @@ import { Button } from '../ui/button';
 import { TransactionTable } from '../TransactionTable';
 import { MultisigCard } from '../MultisigCard';
 import { CreateTransactionDialog } from '../CreateTransactionDialog';
-import type { Multisig, Transaction } from './Multisigstabs';
+import type { Multisig, Transaction } from '../../typescipervault';
+import  { PublicKey } from "@solana/web3.js";
 
 interface OverviewTabProps {
   multisigs: Multisig[];
@@ -12,7 +13,7 @@ interface OverviewTabProps {
   onCreateTransaction: (transaction: Omit<Transaction, 'id' | 'pda' | 'createdAt' | 'approvals' | 'approvedBy' | 'status'>) => void;
   onApproveTransaction: (txId: string) => void;
   onExecuteTransaction: (txId: string) => void;
-  connectedWallet: string;
+  connectedWallet: PublicKey | null;
 }
 
 export function OverviewTab({ 

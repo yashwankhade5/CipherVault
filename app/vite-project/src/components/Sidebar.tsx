@@ -1,14 +1,17 @@
 import { Shield, BarChart3, FileText, Wallet, Settings } from 'lucide-react';
 import  type { TabType } from '../App';
+import  { PublicKey } from "@solana/web3.js";
+import { useWallet } from '@solana/wallet-adapter-react';
 
 interface SidebarProps {
   activeTab: TabType;
   setActiveTab: (tab: TabType) => void;
-  connectedWallet: string;
+  connectedWallet: PublicKey | null;
   onDisconnect: () => void;
 }
 
 export function Sidebar({ activeTab, setActiveTab, connectedWallet, onDisconnect }: SidebarProps) {
+  const wallet = useWallet()
   return (
     <div className="w-64 bg-slate-900 text-white flex flex-col">
       <div className="p-6 border-b border-slate-800">
@@ -62,13 +65,13 @@ export function Sidebar({ activeTab, setActiveTab, connectedWallet, onDisconnect
       <div className="p-4 border-t border-slate-800">
         <div className="bg-slate-800 rounded-lg p-4 mb-3">
           <div className="text-xs text-slate-400 mb-1">Connected Wallet</div>
-          <div className="text-sm font-mono">{connectedWallet}</div>
+          <div className="text-sm font-mono">{connectedWallet ? connectedWallet.toBase58() : <button>connect</button>}</div>
         </div>
         <button
           onClick={onDisconnect}
           className="w-full px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
         >
-          Disconnect Wallet
+         {wallet.disconnecting ? "disconnecting" : 'Disconnect Wallet' } 
         </button>
       </div>
     </div>

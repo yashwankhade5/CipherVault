@@ -7,131 +7,23 @@ import { SettingsTab } from './components/tabs/SettingsTabs';
 import { WalletConnectPage } from './components/WalletConnectPage';
 import { Toaster } from './components/ui/sonner';
 import './App.css'
+import type { Multisig,Transaction } from "./typescipervault";
+import  { PublicKey } from "@solana/web3.js";
+import { Wallet } from 'lucide-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 
 
 export type TabType = 'overview' | 'transactions' | 'multisigs' | 'settings';
 
-export interface Multisig {
-  id: string;
-  name: string;
-  pda: string;
-  owners: string[];
-  threshold: number;
-  balance: string;
-  currency: string;
-  txPending: number;
-  color: string;
-  createdAt: number;
-}
 
-export interface Transaction {
-  id: string;
-  multisigId: string;
-  multisigName: string;
-  pda: string;
-  recipient: string;
-  amount: string;
-  token: string;
-  tokenMint?: string;
-  approvals: number;
-  threshold: number;
-  approvedBy: string[];
-  status: 'pending' | 'ready' | 'executed' | 'rejected';
-  createdAt: number;
-  executedAt?: number;
-}
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
-  const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
-  
-
-  // Mock data - in production, this would come from Solana
-  const [multisigs, setMultisigs] = useState<Multisig[]>([
-    {
-      id: '1',
-      name: 'Operations Treasury',
-      pda: '7xK9p3xY2pmL3p8K9xY2pmL3p8K9xY2pmL3p8K',
-      owners: ['7xK9p3xY2pmL3p', '8sK2pL9mxY2p3K', 'Bm7knR4txY2p3K', 'Cn8mpS5uyZ3q4L', 'Dm9nqT6vzA4r5M'],
-      threshold: 3,
-      balance: '125430.50',
-      currency: 'SOL',
-      txPending: 2,
-      color: 'bg-purple-500',
-      createdAt: Date.now() - 86400000 * 30,
-    },
-    {
-      id: '2',
-      name: 'Development Fund',
-      pda: '8sK2pL9mxY2p3K9xY2pmL3p8K9xY2pmL3p8K',
-      owners: ['7xK9p3xY2pmL3p', '8sK2pL9mxY2p3K', 'Bm7knR4txY2p3K'],
-      threshold: 2,
-      balance: '45220.75',
-      currency: 'SOL',
-      txPending: 1,
-      color: 'bg-blue-500',
-      createdAt: Date.now() - 86400000 * 15,
-    },
-    {
-      id: '3',
-      name: 'Marketing Budget',
-      pda: 'Bm7knR4txY2p3K9xY2pmL3p8K9xY2pmL3p8K',
-      owners: ['7xK9p3xY2pmL3p', '8sK2pL9mxY2p3K', 'Cn8mpS5uyZ3q4L', 'Dm9nqT6vzA4r5M'],
-      threshold: 2,
-      balance: '22100.00',
-      currency: 'SOL',
-      txPending: 0,
-      color: 'bg-pink-500',
-      createdAt: Date.now() - 86400000 * 10,
-    },
-  ]);
-
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: '1',
-      multisigId: '1',
-      multisigName: 'Operations Treasury',
-      pda: 'TxBm7knR4txY2p3K9xY2pmL3p8K9xY2pmL3p8K',
-      recipient: 'GjK9p3xY2pmL3p8K9xY2pmL3p8K9xY2pmL3p8K',
-      amount: '1500.00',
-      token: 'SOL',
-      approvals: 2,
-      threshold: 3,
-      approvedBy: ['7xK9p3xY2pmL3p', '8sK2pL9mxY2p3K'],
-      status: 'pending',
-      createdAt: Date.now() - 7200000,
-    },
-    {
-      id: '2',
-      multisigId: '1',
-      multisigName: 'Operations Treasury',
-      pda: 'TxCn8mpS5uyZ3q4L0yZ3rmM4q9L0yZ3rmM4q9L',
-      recipient: '8sK2pL9mxY2p3K9xY2pmL3p8K9xY2pmL3p8K',
-      amount: '500.00',
-      token: 'USDC',
-      tokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-      approvals: 3,
-      threshold: 3,
-      approvedBy: ['7xK9p3xY2pmL3p', '8sK2pL9mxY2p3K', 'Bm7knR4txY2p3K'],
-      status: 'ready',
-      createdAt: Date.now() - 18000000,
-    },
-    {
-      id: '3',
-      multisigId: '2',
-      multisigName: 'Development Fund',
-      pda: 'TxDm9nqT6vzA4r5M0zA5snN5r0M0zA5snN5r0M',
-      recipient: 'Dm9nqT6vzA4r5M0zA5snN5r0M0zA5snN5r0M',
-      amount: '2000.00',
-      token: 'SOL',
-      approvals: 1,
-      threshold: 2,
-      approvedBy: ['7xK9p3xY2pmL3p'],
-      status: 'pending',
-      createdAt: Date.now() - 86400000,
-    },
-  ]);
+  const [connectedWallet, setConnectedWallet] = useState<PublicKey | null>(null);
+  const [multisigs, setMultisigs] = useState<Multisig[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const wallet = useWallet()
 
   const handleCreateMultisig = (multisig: Omit<Multisig, 'id' | 'createdAt' | 'txPending'>) => {
     const newMultisig: Multisig = {
@@ -166,28 +58,30 @@ export default function App() {
   const handleApproveTransaction = (txId: string) => {
     if (!connectedWallet) return;
 
-    setTransactions(transactions.map(tx => {
-      if (tx.id === txId && !tx.approvedBy.includes(connectedWallet)) {
-        const newApprovals = tx.approvals + 1;
-        const newApprovedBy = [...tx.approvedBy, connectedWallet];
-        return {
-          ...tx,
-          approvals: newApprovals,
-          approvedBy: newApprovedBy,
-          status: newApprovals >= tx.threshold ? 'ready' : 'pending',
-        };
-      }
-      return tx;
-    }));
+    // setTransactions(transactions.map(tx => {
+    //   if (tx.id === txId && !tx.approvedBy.includes(connectedWallet)) {
+    //     const newApprovals = tx.approvals + 1;
+    //     const newApprovedBy = [...tx.approvedBy, connectedWallet];
+    //     return {
+    //       ...tx,
+    //       approvals: newApprovals,
+    //       approvedBy: newApprovedBy,
+    //       status: newApprovals >= tx.threshold ? 'ready' : 'pending',
+    //     };
+    //   }
+    //   return tx;
+    // }));
   };
 
-  const handleConnectWallet = (wallet: string) => {
+  const handleConnectWallet = (wallet:PublicKey | null) => {
     setConnectedWallet(wallet);
   };
 
-  const handleDisconnectWallet = () => {
-    setConnectedWallet(null);
+  const handleDisconnectWallet = async () => {
+   await  wallet.disconnect();
+    
     setActiveTab('overview');
+    setConnectedWallet(null);
   };
 
   const handleExecuteTransaction = (txId: string) => {
@@ -266,7 +160,7 @@ export default function App() {
             onApproveTransaction={handleApproveTransaction}
             onExecuteTransaction={handleExecuteTransaction}
             onRejectTransaction={handleRejectTransaction}
-            connectedWallet={connectedWallet}
+            connectedWallet={wallet.publicKey}
           />
         )}
         {activeTab === 'multisigs' && (
@@ -279,7 +173,7 @@ export default function App() {
         )}
         {activeTab === 'settings' && (
           <SettingsTab
-            connectedWallet={connectedWallet}
+            connectedWallet={wallet.publicKey}
             onDisconnect={handleDisconnectWallet}
           />
         )}
