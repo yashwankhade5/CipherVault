@@ -5,7 +5,35 @@ import { Badge } from '../ui/badge';
 import { CreateMultisigDialog } from '../CreateMultisigDialog';
 import { CreateTransactionDialog } from '../CreateTransactionDialog';
 
-import type { Multisig,Transaction } from "../../typescipervault";
+export interface Multisig {
+  id: string;
+  name: string;
+  pda: string;
+  owners: string[];
+  threshold: number;
+  balance: string;
+  currency: string;
+  txPending: number;
+  color: string;
+  createdAt: number;
+}
+
+export interface Transaction {
+  id: string;
+  multisigId: string;
+  multisigName: string;
+  pda: string;
+  recipient: string;
+  amount: string;
+  token: string;
+  tokenMint?: string;
+  approvals: number;
+  threshold: number;
+  approvedBy: string[];
+  status: 'pending' | 'ready' | 'executed' | 'rejected';
+  createdAt: number;
+  executedAt?: number;
+}
 
 
 interface MultisigsTabProps {
@@ -78,7 +106,7 @@ export function MultisigsTab({
                       {multisig.threshold} of {multisig.owners.length} signatures required
                     </div>
                     <div className="font-mono text-xs text-slate-500">
-                      PDA: {multisig.pda.toBase58()}
+                      PDA: {multisig.pda}
                     </div>
                   </div>
                 </div>
@@ -115,7 +143,7 @@ export function MultisigsTab({
                       <div className="w-8 h-8 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center">
                         {idx + 1}
                       </div>
-                      <div className="font-mono text-slate-600">{owner.toBase58()}</div>
+                      <div className="font-mono text-slate-600">{owner}</div>
                     </div>
                   ))}
                 </div>

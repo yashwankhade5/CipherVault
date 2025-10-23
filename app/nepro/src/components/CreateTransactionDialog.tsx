@@ -6,7 +6,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import type { Multisig, Transaction } from '../typescipervault';
+import type { Multisig, Transaction } from '../App';
 import { toast } from 'sonner';
 
 interface CreateTransactionDialogProps {

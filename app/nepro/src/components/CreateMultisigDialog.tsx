@@ -5,9 +5,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import type { Multisig } from '../typescipervault';
+import type { Multisig } from '../App';
 import { toast } from 'sonner';
-import { PublicKey } from "@solana/web3.js";
 
 interface CreateMultisigDialogProps {
   onCreateMultisig: (multisig: Omit<Multisig, 'id' | 'createdAt' | 'txPending'>) => void;
@@ -18,11 +17,11 @@ export function CreateMultisigDialog({ onCreateMultisig, children }: CreateMulti
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [threshold, setThreshold] = useState('2');
-  const [owners, setOwners] = useState<(PublicKey |null)[]>([]);
+  const [owners, setOwners] = useState(['', '']);
   const [balance, setBalance] = useState('0');
 
   const handleAddOwner = () => {
-    setOwners([...owners,null]);
+    setOwners([...owners, '']);
   };
 
   const handleRemoveOwner = (index: number) => {
@@ -32,9 +31,8 @@ export function CreateMultisigDialog({ onCreateMultisig, children }: CreateMulti
   };
 
   const handleOwnerChange = (index: number, value: string) => {
-   let  new_value = new PublicKey(value)
     const newOwners = [...owners];
-    newOwners[index] = new_value;
+    newOwners[index] = value;
     setOwners(newOwners);
   };
 
@@ -46,7 +44,7 @@ export function CreateMultisigDialog({ onCreateMultisig, children }: CreateMulti
       return;
     }
 
-    const validOwners = owners.filter(o => o !== null);
+    const validOwners = owners.filter(o => o.trim() !== '');
     if (validOwners.length < 2) {
       toast.error('At least 2 owners are required');
       return;
@@ -62,7 +60,7 @@ export function CreateMultisigDialog({ onCreateMultisig, children }: CreateMulti
     
     onCreateMultisig({
       name,
-      pda: new PublicKey(`MS${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`),
+      pda: `MS${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
       owners: validOwners,
       threshold: thresholdNum,
       balance,
@@ -73,7 +71,7 @@ export function CreateMultisigDialog({ onCreateMultisig, children }: CreateMulti
     // Reset form
     setName('');
     setThreshold('2');
-    setOwners([null, null]);
+    setOwners(['', '']);
     setBalance('0');
     setOpen(false);
     
@@ -111,7 +109,7 @@ export function CreateMultisigDialog({ onCreateMultisig, children }: CreateMulti
                 id="threshold"
                 type="number"
                 min="1"
-                max={owners.filter(o => o).length}
+                max={owners.filter(o => o.trim()).length}
                 value={threshold}
                 onChange={(e) => setThreshold(e.target.value)}
               />
@@ -153,7 +151,7 @@ export function CreateMultisigDialog({ onCreateMultisig, children }: CreateMulti
                 <div key={index} className="flex gap-2">
                   <Input 
                     placeholder={`Owner ${index + 1} address`}
-                    value={owner?.toBase58() as string}
+                    value={owner}
                     onChange={(e) => handleOwnerChange(index, e.target.value)}
                     className="font-mono"
                   />
@@ -179,7 +177,7 @@ export function CreateMultisigDialog({ onCreateMultisig, children }: CreateMulti
             <div className="text-sm text-blue-900">
               This will create a multisig requiring{' '}
               <span className="font-semibold">{threshold}</span> out of{' '}
-              <span className="font-semibold">{owners.filter(o => o).length}</span> signatures
+              <span className="font-semibold">{owners.filter(o => o.trim()).length}</span> signatures
               to approve transactions.
             </div>
           </div>

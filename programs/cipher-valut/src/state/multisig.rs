@@ -10,6 +10,7 @@ pub struct Multisig {
     pub transaction_count: u32,
     pub name: String,
     pub vaultbump: u8,
+    pub tx_pending:u16,
 }
 
 #[derive(Accounts)]
@@ -21,7 +22,8 @@ pub struct Initialize<'info> {
         60+   //max owners size = 15
         1200+  // max no of tokens hold = 1000
         64+   // sol amount
-        4,//creator:pubkey
+        4+//creator:pubkey
+       2,
         seeds=[b"multisig",creator.key().as_ref(),name.as_ref()],
         bump
     )]
