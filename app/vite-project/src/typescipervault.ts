@@ -3,8 +3,8 @@ import  { PublicKey } from "@solana/web3.js";
 export interface Multisig {
   id: string;
   name: string;
-  pda: string;
-  owners: string[];
+  pda: PublicKey;
+  owners: PublicKey[];
   threshold: number;
   balance: string;
   currency: string;
