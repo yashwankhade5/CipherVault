@@ -10,10 +10,10 @@ pub fn create_transaction_handler(
     let clock = Clock::get()?;
     require!(
         ctx.accounts.vault.lamports() >= ctx.accounts.transaction_account.amount,
-        MyError::NotEnoughApproval
+        MyError::NotEnoughSol
     );
     ctx.accounts.transaction_account.multisig = ctx.accounts.multisig.key();
-    ctx.accounts.transaction_account.amount = amount.unwrap_or(0);
+    ctx.accounts.transaction_account.amount = amount.unwrap_or(000000000);
     // ctx.accounts.transaction_account.spl_token = spl_token.unwrap_or_default();
     ctx.accounts.transaction_account.approval = vec![false; ctx.accounts.multisig.owners.len()];
     ctx.accounts.transaction_account.proposer = ctx.accounts.proposer.key();
@@ -29,6 +29,7 @@ pub fn create_transaction_handler(
         .ok_or(MyError::ProposeNotinOwners)?;
 
     ctx.accounts.transaction_account.approval[owner_index] = true;
+    ctx.accounts.multisig.transaction_count +=1;
 
     Ok(())
 }

@@ -20,6 +20,7 @@ pub fn transaction_execute(ctx: Context<TransactionExecuteContext>) -> Result<()
     if 0 < transaction_account.amount {
         vault_account.sub_lamports(ctx.accounts.transaction_account.amount)?;
         reciepient_account.add_lamports(ctx.accounts.transaction_account.amount)?;
+        ctx.accounts.transaction_account.executed = true;
     }
 
     Ok(())
