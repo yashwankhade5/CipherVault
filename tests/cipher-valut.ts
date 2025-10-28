@@ -43,7 +43,11 @@ describe("cipher-valut", () => {
     // Add your test here.
     const tx = await program.methods.createMultisig(2, [owner1.publicKey, owner2.publicKey], "org").accounts({
       creator: owner1.publicKey,
-    }).signers([owner1]).rpc();
+    }).signers([owner1]).rpc()
+
+
+
+    
 
     console.log("Your transaction signature", tx);
 
@@ -70,7 +74,7 @@ describe("cipher-valut", () => {
     transBuffer.writeUInt32LE(multisig.transactionCount);
 
     [transactionPda, bumptran] = PublicKey.findProgramAddressSync(
-      [Buffer.from("transaction"), owner1.publicKey.toBuffer(), transBuffer],
+      [Buffer.from("transaction"), multiSigPda.toBuffer(), transBuffer],
       program.programId
     )
     const tx = await program.methods.createTransaction(new anchor.BN(1 * anchor.web3.LAMPORTS_PER_SOL), null)
@@ -86,6 +90,7 @@ describe("cipher-valut", () => {
       .signers([owner1])
       .rpc()
 
+       const multisigafter = await program.account.multisig.fetch(multiSigPda)
     console.log("transaction sign from transaction account craetion", tx)
     transaction_account_data = await program.account.transactionAccount.fetch(transactionPda)
     expect(transaction_account_data.proposer).to.deep.equal(owner1.publicKey)
@@ -93,10 +98,18 @@ describe("cipher-valut", () => {
     expect(transaction_account_data.multisig).to.deep.equal(multiSigPda)
     expect(transaction_account_data.executed).to.deep.equal(false)
     expect(transaction_account_data.valut).to.deep.equal(vaultpda)
+    expect(multisigafter.txPending).to.deep.equal(multisig.txPending+1)
+
   })
 
   it("it approves transaction", async () => {
     const tx = await program.methods.approval()
+      .accountsStrict({
+        approver: owner2.publicKey,
+        multisig: multiSigPda,
+        transaction: transactionPda,
+      }).signers([owner2]).rpc()
+    const tx1 = await program.methods.approval()
       .accountsStrict({
         approver: owner2.publicKey,
         multisig: multiSigPda,
@@ -107,6 +120,7 @@ describe("cipher-valut", () => {
     const approval_data = await program.account.transactionAccount.fetch(transactionPda)
     expect(approval_data.approval).to.deep.equal([true, true])
     expect(approval_data.reciepient).to.deep.equal(transaction_account_data.reciepient)
+    
   })
 
   it("Transaction execution", async () => {

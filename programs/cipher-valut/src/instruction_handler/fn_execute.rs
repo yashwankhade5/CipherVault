@@ -21,23 +21,27 @@ pub fn transaction_execute(ctx: Context<TransactionExecuteContext>) -> Result<()
         vault_account.sub_lamports(ctx.accounts.transaction_account.amount)?;
         reciepient_account.add_lamports(ctx.accounts.transaction_account.amount)?;
         ctx.accounts.transaction_account.executed = true;
+         ctx.accounts.multisig.tx_pending = ctx.accounts.multisig.tx_pending.checked_sub(1).ok_or(MyError::Underflow)?;
     }
+    
 
     Ok(())
 }
 
 #[derive(Accounts)]
 pub struct TransactionExecuteContext<'info> {
+    #[account(mut)]
     pub multisig: Account<'info, Multisig>,
     #[account(mut)]
     pub signer: Signer<'info>,
-
+#[account(mut)]
     pub transaction_account: Account<'info, TransactionAccount>,
 
     #[account(mut)]
     /// CHECK: this sol vault not dataccount
     pub vault: AccountInfo<'info>,
-
+    
+ #[account(mut)]
     /// CHECK: this sol vault not dataccount
     pub reciepient_account: AccountInfo<'info>,
 

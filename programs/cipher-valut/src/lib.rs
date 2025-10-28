@@ -50,4 +50,8 @@ pub enum MyError {
     ProposeNotinOwners,
     #[msg("not enough sol in vault")]
     NotEnoughSol,
+    #[msg("overflow count")]
+    Overflow,
+    #[msg("Underflow count")]
+    Underflow,
 }
