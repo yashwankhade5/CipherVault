@@ -1,5 +1,6 @@
 use crate::state::Initialize;
 use anchor_lang::prelude::*;
+use crate::MyError;
 
 pub fn create_multisig_handler(
     ctx: Context<Initialize>,
@@ -7,6 +8,9 @@ pub fn create_multisig_handler(
     owners: Vec<Pubkey>,
     name: String,
 ) -> Result<()> {
+    for (i,owner) in owners.iter().enumerate(){
+        require!(!owners[i+1..].contains(owner),MyError::DuplicateOwners)
+    }
     ctx.accounts.multi_sig.creator = ctx.accounts.creator.key();
     ctx.accounts.multi_sig.owners = Box::new(owners);
     ctx.accounts.multi_sig.threshold = threshold;

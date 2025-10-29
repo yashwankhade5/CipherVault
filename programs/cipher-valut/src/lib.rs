@@ -54,4 +54,6 @@ pub enum MyError {
     Overflow,
     #[msg("Underflow count")]
     Underflow,
+    #[msg("duplicate owners")]
+    DuplicateOwners,
 }

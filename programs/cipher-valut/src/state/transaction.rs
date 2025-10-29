@@ -18,6 +18,7 @@ pub struct TransactionAccount {
     pub reciepient: Pubkey,
     pub proposer: Pubkey,
     pub date: i64,
+    pub executedAt:i64
 }
 
 #[derive(Accounts)]
@@ -37,6 +38,7 @@ pub struct TransactionContext<'info> {
         32+ //proposer pubkey
         1+ //executed bool
         32+
+        8+
         8, // reciepient
         seeds = [b"transaction",multisig.key().as_ref(),&multisig.transaction_count.to_le_bytes()],
         bump
