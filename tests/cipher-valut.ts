@@ -1,7 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import { Program ,BN} from "@coral-xyz/anchor";
 import { CipherValut } from "../target/types/cipher_valut";
-import { AccountInfo, Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
+import { AccountInfo, Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
 import { assert, expect } from "chai";
 import { it } from "mocha";
 import { Account, TOKEN_PROGRAM_ID } from "@solana/spl-token";
@@ -22,10 +22,10 @@ describe("cipher-valut", () => {
 
   before(async () => {
     await connection.confirmTransaction(
-      await connection.requestAirdrop(owner1.publicKey, 2 * anchor.web3.LAMPORTS_PER_SOL),
+      await connection.requestAirdrop(owner1.publicKey, 200 * anchor.web3.LAMPORTS_PER_SOL),
     );
     await connection.confirmTransaction(
-      await connection.requestAirdrop(owner2.publicKey, 2 * anchor.web3.LAMPORTS_PER_SOL),
+      await connection.requestAirdrop(owner2.publicKey, 200 * anchor.web3.LAMPORTS_PER_SOL),
     );
   });
 
@@ -41,7 +41,7 @@ describe("cipher-valut", () => {
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const tx = await program.methods.createMultisig(2, [owner1.publicKey, owner2.publicKey], "org").accounts({
+    const tx = await program.methods.createMultisig(2, [owner1.publicKey, owner2.publicKey], "org",new BN(1*LAMPORTS_PER_SOL)).accounts({
       creator: owner1.publicKey,
     }).signers([owner1]).rpc()
 
@@ -60,7 +60,7 @@ describe("cipher-valut", () => {
 
     const vault_account_data = await program.provider.connection.getAccountInfo(vaultpda, "confirmed")
 
-    expect(vault_account_data.lamports).to.deep.equal(890880)
+    expect(vault_account_data.lamports).to.deep.equal(1000890880)
     expect(vault_account_data.owner).to.deep.equal(program.programId)
   });
 

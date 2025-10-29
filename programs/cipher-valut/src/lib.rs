@@ -17,8 +17,9 @@ pub mod cipher_valut {
         threshold: u8,
         owners: Vec<Pubkey>,
         name: String,
+        amount: Option<u64>
     ) -> Result<()> {
-        create_multisig_handler(ctx, threshold, owners, name)
+        create_multisig_handler(ctx, threshold, owners, name,amount)
     }
 
     pub fn create_transaction(
@@ -52,6 +53,7 @@ pub enum MyError {
     NotEnoughSol,
     #[msg("overflow count")]
     Overflow,
+    
     #[msg("Underflow count")]
     Underflow,
     #[msg("duplicate owners")]

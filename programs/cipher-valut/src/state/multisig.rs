@@ -9,12 +9,12 @@ pub struct Multisig {
     pub threshold: u8,
     pub transaction_count: u32,
     pub name: String,
-    pub vaultbump: u8,
+    pub vault: Pubkey,
     pub tx_pending:u16,
 }
 
 #[derive(Accounts)]
-#[instruction(threshold:u8,owners:Vec<Pubkey>,name:String)]
+#[instruction(threshold:u8,owners:Vec<Pubkey>,name:String,amount:u64)]
 pub struct Initialize<'info> {
     #[account(init,payer=creator,
         space=8+
@@ -23,7 +23,8 @@ pub struct Initialize<'info> {
         1200+  // max no of tokens hold = 1000
         64+   // sol amount
         4+//creator:pubkey
-       2,
+       2+
+       32,//vault pda
         seeds=[b"multisig",creator.key().as_ref(),name.as_ref()],
         bump
     )]

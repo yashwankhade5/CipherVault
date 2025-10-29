@@ -8,10 +8,9 @@ pub fn create_transaction_handler(
     spl_token: Option<SplTokenData>,
 ) -> Result<()> {
     let clock = Clock::get()?;
-    require!(
-        ctx.accounts.vault.lamports() >= ctx.accounts.transaction_account.amount,
-        MyError::NotEnoughSol
-    );
+
+    require!(ctx.accounts.vault.lamports() >= ctx.accounts.transaction_account.amount,MyError::NotEnoughSol);
+
     ctx.accounts.transaction_account.reciepient = ctx.accounts.reciepient.key();
     ctx.accounts.transaction_account.multisig = ctx.accounts.multisig.key();
     ctx.accounts.transaction_account.amount = amount.unwrap_or(000000000);
@@ -20,10 +19,14 @@ pub fn create_transaction_handler(
     ctx.accounts.transaction_account.executed = false;
     ctx.accounts.transaction_account.date = clock.unix_timestamp;
     ctx.accounts.transaction_account.valut = ctx.accounts.vault.key();
+
     let owner_index = ctx.accounts.multisig.owners.iter().position(|&a| a == ctx.accounts.proposer.key()).ok_or(MyError::ProposeNotinOwners)?;
+
     ctx.accounts.transaction_account.approval[owner_index] = true;
+
     ctx.accounts.multisig.transaction_count = ctx.accounts.multisig.transaction_count.checked_add(1).ok_or(MyError::Overflow)?;
 
+    ctx.accounts.transaction_account.spl_token =spl_token.unwrap_or(SplTokenData {mint:Pubkey::default(),amount: 0});
     ctx.accounts.multisig.tx_pending = ctx
         .accounts
         .multisig
