@@ -1,7 +1,7 @@
 
 
-import type { CipherValut } from "./ciphervault-types";
-import idl from "./cipher_vault.json";
+import type { CipherValut } from "../../../target/types/cipher_valut";
+import idl from "../../../target/idl/cipher_valut.json";
 import { useMemo } from "react";
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";

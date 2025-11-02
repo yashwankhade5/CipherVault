@@ -7,7 +7,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-cipher_valut = "ALyuWP3baEXSzYhHfVYh37UPEzupM518d8XfbibcK1hj"
+cipher_valut = "GE7BKNYicWuTHVxWfTTBg8LZJSjURtWta9PgrvmrYkjj"
 
 [registry]
 url = "https://api.apr.dev"

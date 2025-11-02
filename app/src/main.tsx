@@ -12,7 +12,7 @@ window.Buffer = Buffer;
 
 createRoot(document.getElementById('root')!).render(
   
-    <ConnectionProvider endpoint={"https://api.devnet.solana.com"}>
+    <ConnectionProvider endpoint={"http://127.0.0.1:8899"}>
       <WalletProvider wallets={[]} autoConnect>
         <WalletModalProvider>
         <App />

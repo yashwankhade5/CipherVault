@@ -4,7 +4,7 @@ pub mod state;
 use crate::instruction_handler::*;
 use crate::state::{approval::*, multisig::*, transaction::*, SplTokenData};
 
-declare_id!("ALyuWP3baEXSzYhHfVYh37UPEzupM518d8XfbibcK1hj");
+declare_id!("GE7BKNYicWuTHVxWfTTBg8LZJSjURtWta9PgrvmrYkjj");
 
 #[program]
 pub mod cipher_valut {

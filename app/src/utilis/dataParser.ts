@@ -1,4 +1,4 @@
-import type { PublicKey } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, type PublicKey } from "@solana/web3.js";
 import type { BN } from "@coral-xyz/anchor";
 import type { Multisig,Transaction } from "./vault-types";
 
@@ -78,7 +78,8 @@ export function transactionconvert(transactiondata: transactiondatarecieved, mul
 }
 
 export function  multisigConvert(multisigdata:multisigdatarecieved,multisigpda:PublicKey,vaultpda:PublicKey,vaultlamports:BN) {
-    
+   const lamports = BigInt(vaultlamports.toString());
+const LAMPORTS_PER_SOL = 1_000_000_000n;
 
     const validowners = multisigdata.owners.map(owner => owner.toBase58())
             const newmultisig: Multisig = {
@@ -88,7 +89,7 @@ export function  multisigConvert(multisigdata:multisigdatarecieved,multisigpda:P
               creator: multisigdata.creator,
               owners: validowners,
               threshold: multisigdata.threshold,
-              balance: (vaultlamports as number) / 1000000000,
+              balance: Number(lamports/LAMPORTS_PER_SOL),
               currency: "SOL",
               txPending: multisigdata.txPending,
               color: "bg-blue-600",
